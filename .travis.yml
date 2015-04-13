@@ -8,4 +8,4 @@ before_install:
 
 after_success:
   - go build 
-  - ghr --username therealbill --token $GITHUB_TOKEN --replace $(cat .version) pod-connector
+  - ghr -r sentinel-tools/pod-connector --username therealbill --token $GITHUB_TOKEN --replace $(cat .version) pod-connector
