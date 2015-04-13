@@ -3,5 +3,8 @@ language: go
 go:
     - 1.4
 
+before_install:
+  - go get github.com/tcnksm/ghr
+
 after_success:
   - ghr --username therealbill --token $GITHUB_TOKEN --replace $(cat .version) pod-connector
