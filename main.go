@@ -62,12 +62,9 @@ func init() {
 		}
 	}
 	if !(config.UseSentinelConfig || config.UseRedSkull) {
-		log.Print("No soure specified, assuming local sentinel config")
 		config.SentinelConfigFile = "/etc/redis/sentinel.conf"
 		config.UseSentinelConfig = true
 	}
-
-	log.Printf("Launch Config: '%+v'", config)
 
 }
 

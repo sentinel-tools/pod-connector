@@ -10,9 +10,12 @@ import (
 )
 
 func getPodInfoFromConfig(podname string) (PodConfig, error) {
-	log.Print("searching config for pod")
+	return getPodInfoFromConfigFile(config.SentinelConfigFile, podname)
+}
+
+func getPodInfoFromConfigFile(configfile string, podname string) (PodConfig, error) {
 	var pod PodConfig
-	file, err := os.Open(config.SentinelConfigFile)
+	file, err := os.Open(configfile)
 	defer file.Close()
 	if err != nil {
 		log.Print(err)
@@ -36,7 +39,6 @@ func getPodInfoFromConfig(podname string) (PodConfig, error) {
 				if len(entries) == 0 {
 					continue
 				}
-				log.Printf("podname:%s", entries[1])
 				if entries[2] == podname {
 					foundpod = true
 					//Most values are key/value pairs
