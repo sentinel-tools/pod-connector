@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.org/sentinel-tools/pod-connector.svg?branch=master)](https://travis-ci.org/sentinel-tools/pod-connector)
+
+
 # Pod Connector
 Pod connector is a CLI Tool for extracting information for a specific pod from
 a sentinel config file or via a Redskull server.

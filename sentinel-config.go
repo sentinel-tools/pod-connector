@@ -9,10 +9,14 @@ import (
 	"strings"
 )
 
+// getPodInfoFromConfig returns a PodConfig struct with information about
+// the found pod, error and an empty struct otherwise
 func getPodInfoFromConfig(podname string) (PodConfig, error) {
 	return getPodInfoFromConfigFile(config.SentinelConfigFile, podname)
 }
 
+// getPodInfoFromConfigFile actually parses the config file and is intended to
+// be called by getPodInfoFromConfig
 func getPodInfoFromConfigFile(configfile string, podname string) (PodConfig, error) {
 	var pod PodConfig
 	file, err := os.Open(configfile)
