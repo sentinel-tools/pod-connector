@@ -22,3 +22,10 @@ _testmain.go
 *.exe
 *.test
 *.prof
+
+pod-connector
+
+# Vim swap files
+*.swp
+*.swo
+
