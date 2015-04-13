@@ -54,6 +54,7 @@ func getPodInfoFromConfigFile(configfile string, podname string) (PodConfig, err
 						pod.Name = podname
 						pod.MasterIP = entries[3]
 						pod.MasterPort = entries[4]
+						pod.Quorum = entries[5]
 						continue
 					case "known-slave":
 						pod.KnownSlaves = append(pod.KnownSlaves, entries[3])
@@ -65,7 +66,7 @@ func getPodInfoFromConfigFile(configfile string, podname string) (PodConfig, err
 						pod.Authpass = entries[3]
 						continue
 					case "config-epoch", "leader-epoch", "current-epoch", "down-after-milliseconds", "maxclients", "parallel-syncs", "can-failover", "failover-timeout":
-						pod.Settings[entries[1]] = entries[3]
+						pod.Settings[entries[1]] = strings.TrimSpace(entries[3])
 						continue
 					default:
 						fmt.Printf("Unhandled directive line: %+v\n", rawline)

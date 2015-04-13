@@ -44,7 +44,6 @@ successful execution. Of course, this means redis-cli must be in your PATH.
 
 
 # TODO
-* Better formatting of pod information
 * Option to set various sentinel variables such as down-in-milliseconds
 * Update password option to update the password in sentinel (and optionally the instances?)
 * Ability to pass redis-cli arguments to pod-connector to have it execute for you

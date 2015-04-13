@@ -8,6 +8,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"text/template"
 )
 
 type LaunchConfig struct {
@@ -26,6 +27,7 @@ type PodConfig struct {
 	KnownSentinels []string
 	KnownSlaves    []string
 	Settings       map[string]string
+	Quorum         string
 }
 
 var (
@@ -108,7 +110,11 @@ func main() {
 		cmd.Stdin = os.Stdin
 		cmd.Run()
 	} else {
-		fmt.Printf("Pod:\t%+v\n", pod)
+		t := template.Must(template.New("podinfo").Parse(PodInfoTemplate))
+		err := t.Execute(os.Stdout, pod)
+		if err != nil {
+			log.Println("executing template:", err)
+		}
 		fmt.Printf("cli string: redis-cli -h %s -p %s -a %s\n", pod.MasterIP, pod.MasterPort, pod.Authpass)
 	}
 }
