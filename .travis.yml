@@ -3,3 +3,5 @@ language: go
 go:
     - 1.4
 
+after_success:
+  - ghr --username therealbill --token $GITHUB_TOKEN --replace $(cat .version) pod-connector
