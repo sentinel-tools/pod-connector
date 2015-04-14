@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+
 	"github.com/kelseyhightower/envconfig"
 	//"io"
 	"log"
@@ -83,6 +84,11 @@ func main() {
 
 	var pod PodConfig
 	var err error
+	if podname == "" {
+		log.Print("Need a podname. Try using '-podname <podname>'")
+		flag.PrintDefaults()
+		return
+	}
 
 	if config.UseSentinelConfig {
 		log.Print("using sentinel config file")
