@@ -83,19 +83,14 @@ func main() {
 
 	if config.UseSentinelConfig {
 		log.Print("using sentinel config file")
-		/*
-			pod, err = getPodInfoFromConfig(podname)
-			if err != nil {
-				fmt.Printf("Pod %s not found\n", podname)
-				fmt.Printf("Error: %s\n", err.Error())
-				return
-			}
-		*/
 		sentinel, err := parser.ParseSentinelConfig(config.SentinelConfigFile)
 		if err != nil {
 			log.Fatal(err)
 		}
 		pod, err = sentinel.GetPod(podname)
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
 	if config.UseRedSkull {
 		log.Print("Using RedSkull connection")
