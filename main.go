@@ -10,6 +10,8 @@ import (
 	"os"
 	"os/exec"
 	"text/template"
+
+	parser "github.com/sentinel-tools/sconf-parser"
 )
 
 type LaunchConfig struct {
@@ -18,17 +20,6 @@ type LaunchConfig struct {
 	ValidateNodes      bool
 	UseRedSkull        bool
 	UseSentinelConfig  bool
-}
-
-type PodConfig struct {
-	Name           string
-	MasterIP       string
-	MasterPort     string
-	Authpass       string
-	KnownSentinels []string
-	KnownSlaves    []string
-	Settings       map[string]string
-	Quorum         string
 }
 
 var (
@@ -82,7 +73,7 @@ func main() {
 	flag.BoolVar(&cli, "cli", false, "launch redis-cli to connect to the pod")
 	flag.Parse()
 
-	var pod PodConfig
+	var pod parser.PodConfig
 	var err error
 	if podname == "" {
 		log.Print("Need a podname. Try using '-podname <podname>'")
@@ -92,12 +83,19 @@ func main() {
 
 	if config.UseSentinelConfig {
 		log.Print("using sentinel config file")
-		pod, err = getPodInfoFromConfig(podname)
+		/*
+			pod, err = getPodInfoFromConfig(podname)
+			if err != nil {
+				fmt.Printf("Pod %s not found\n", podname)
+				fmt.Printf("Error: %s\n", err.Error())
+				return
+			}
+		*/
+		sentinel, err := parser.ParseSentinelConfig(config.SentinelConfigFile)
 		if err != nil {
-			fmt.Printf("Pod %s not found\n", podname)
-			fmt.Printf("Error: %s\n", err.Error())
-			return
+			log.Fatal(err)
 		}
+		pod, err = sentinel.GetPod(podname)
 	}
 	if config.UseRedSkull {
 		log.Print("Using RedSkull connection")
