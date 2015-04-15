@@ -33,7 +33,9 @@ Sentinel via the `MONITOR` command
 
 ## Info Dump
 
-By default it will dump whatever information is available from the source.
+By default it will dump whatever information is available from the source. You
+can choose to let it be formatted for humans, or pass `-jsonout` to get it as a
+JSON encoded string.
 
 ## Connecting Directly
 If you pass the flag `-cli`, pod-connector will execute redis-cli on your
@@ -42,6 +44,16 @@ authentication. Essentially this saves you from needing to execute the
 redis-cli yourself. You will be placed directly into the redis-cli shell on a
 successful execution. Of course, this means redis-cli must be in your PATH.
 
+# Which Pod Tool?
+Why pod-connector and pod-manager? Pod Connector's primary purpose is to
+provide connectivity to the specified pod, with a bit of info available. Pod
+Manager, however, is designed to make changes to sentinel and in some cases
+directly to the instances in the pod.
+
+You might give access to pod-connector people whom you are willing to allow
+connectivity to the pod, but reserve pod-manager access for those who manage
+sentinel and the pod. Different needs, different tools. This is much simpler
+than yet another user system in a tool.
 
 # TODO
 * Option to set various sentinel variables such as down-in-milliseconds
