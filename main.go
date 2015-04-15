@@ -1,15 +1,16 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
 	"fmt"
 
-	"github.com/kelseyhightower/envconfig"
-	//"io"
 	"log"
 	"os"
 	"os/exec"
 	"text/template"
+
+	"github.com/kelseyhightower/envconfig"
 
 	parser "github.com/sentinel-tools/sconf-parser"
 )
@@ -23,9 +24,17 @@ type LaunchConfig struct {
 }
 
 var (
-	config  LaunchConfig
-	podname string
-	cli     bool
+	config LaunchConfig
+	enc    *json.Encoder
+)
+
+// cli flags
+var (
+	podname            string
+	cli                bool
+	info               bool
+	jsonout            bool
+	validatemasterrole bool
 )
 
 func init() {
@@ -71,6 +80,8 @@ func checkError(err error) {
 func main() {
 	flag.StringVar(&podname, "podname", "", "Name of the pod")
 	flag.BoolVar(&cli, "cli", false, "launch redis-cli to connect to the pod")
+	flag.BoolVar(&jsonout, "jsonout", false, "output info in JSON format (requires -info)")
+	flag.BoolVar(&info, "info", false, "output info")
 	flag.Parse()
 
 	var pod parser.PodConfig
@@ -79,6 +90,9 @@ func main() {
 		log.Print("Need a podname. Try using '-podname <podname>'")
 		flag.PrintDefaults()
 		return
+	}
+	if jsonout {
+		enc = json.NewEncoder(os.Stdout)
 	}
 
 	if config.UseSentinelConfig {
@@ -108,12 +122,21 @@ func main() {
 		cmd.Stderr = os.Stderr
 		cmd.Stdin = os.Stdin
 		cmd.Run()
-	} else {
-		t := template.Must(template.New("podinfo").Parse(PodInfoTemplate))
-		err := t.Execute(os.Stdout, pod)
-		if err != nil {
-			log.Println("executing template:", err)
+	}
+
+	if info {
+		if jsonout {
+			if err := enc.Encode(&pod); err != nil {
+				log.Println(err)
+			}
+		} else {
+			t := template.Must(template.New("podinfo").Parse(PodInfoTemplate))
+			err := t.Execute(os.Stdout, pod)
+			if err != nil {
+				log.Println("executing template:", err)
+			}
+			fmt.Printf("cli string: redis-cli -h %s -p %s -a %s\n", pod.MasterIP, pod.MasterPort, pod.Authpass)
 		}
-		fmt.Printf("cli string: redis-cli -h %s -p %s -a %s\n", pod.MasterIP, pod.MasterPort, pod.Authpass)
+		return
 	}
 }
